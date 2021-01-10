@@ -1,6 +1,7 @@
 import discord
 import requests
 import wikipedia
+import json
 from discord.ext import commands
 
 import youtube_dl
@@ -9,22 +10,23 @@ import datetime
 import random
 from collections import OrderedDict
 
-bot_token = "Nzk2MDM1MzMwNjYyMjAzNDYy.X_SDrA.9Q-z1WT1c4VV8eeHTc_OqJc4_dQ"
-creatorid = 569187596844924949
+f = open("config.json","r")#if the bot doesnt run be sure the config.json is in the same folder or that it hase the same name
+config = json.load(f)
+f.close()
+bot_token = config["BOT_TOKEN"] 
 
 thickresponses = [" THICK , GG!" , " NOT THICK , thats sad." , " in between.." , " too skinny , not THICK..." , " DAMN BOIIIII HE THICK!!"]
 responses = ["Good,you?", "I AM THICK BOIIIIIIIIIIIIIIIIIIIIIIIIII","I am bored","I am bad,you...?","I don't know what I am doing with my life anymore" , "UwU" , "OwO" , "¯\_(ツ)_/¯","༼ つ ◕_◕ ༽つ vibing..."]
 cats = ["Cat1.jpg","Cat2.jpg","Cat3.jpg","cat4.jpg"]
 
-apikeyyoutube = "AIzaSyDWiUq5Yf5Hx99XGmO5tS9CJvwa-BYW-Ps"
-apikeyimdb = "1658b05b"
+hostid = config["HostID"]
+
+apikeyyoutube = config["ytapikey"]
+apikeyimdb = config["imdbapikey"]
 
 bot = commands.Bot(command_prefix='BOI ')
 players = {}
 
-memenumber = 0
-
-debuggin = False
 
 @bot.event
 async def on_active(ctx:bot.event):
@@ -32,6 +34,9 @@ async def on_active(ctx:bot.event):
 
 @bot.command()
 async def imdb(ctx : commands.Context, *, keyword : str):
+    if keyword == None:
+        await ctx.send("Please enter a keyword to search a movie")
+        return
     r = requests.get(f"https://www.omdbapi.com/?t={keyword}&apikey={apikeyimdb}")
     data = r.json()
     data["Response"] = data["Response"] == "True"
@@ -126,11 +131,6 @@ async def youtube(ctx : commands.Context, *, keyword : str):
     else:
         await ctx.send(f'I could not find any results for your search.')
 
-@bot.command(brief="Sends you a photo of a cat (OLD)")
-async def cat(ctx:commands.Context):
-    await ctx.send(file=discord.File(random.choice(cats)))
-    await ctx.send("ᓚᘏᗢ cute!")
-
 @bot.command(brief="Sends random picture of a cat(NEW)")
 async def catplz(ctx:commands.Context):
     data = requests.get("http://aws.random.cat/meow").json()
@@ -200,9 +200,10 @@ async def amITHICK(ctx:commands.Context):
 async def howareyou (ctx:commands.Context):
     await ctx.send(f"{random.choice(responses)}")
 
+creatorid = 569187596844924949
 @bot.command(brief="Makes bot ragequit")
 async def quit (ctx:commands.Context):
-    if(ctx.author.id == creatorid):
+    if(ctx.author.id == creatorid or ctx.author.id ==hostid):
         await ctx.send("Bye , you all not thick anymore :sob:")
         await bot.quit()
     else:
