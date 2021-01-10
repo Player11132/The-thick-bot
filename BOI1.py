@@ -205,7 +205,7 @@ creatorid = 569187596844924949
 async def quit (ctx:commands.Context):
     if(ctx.author.id == creatorid or ctx.author.id ==hostid):
         await ctx.send("Bye , you all not thick anymore :sob:")
-        await bot.quit()
+        await bot.close()
     else:
        await ctx.send("YOU NOT MY DAD!,GET AWAY FROM ME!")
     
