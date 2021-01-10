@@ -9,3 +9,8 @@
 1. Fill in the `BOT_TOKEN` field
 	* if youve DM me (`Player11132#7328`) i will send you a bot token and you will paste it in the `BOT_TOKEN` field then run the bot ,you are done
 	* or create your own bot
+
+## `run` and `upload` dependencies/notes
+1. It's likely that these will only work on Linux.
+1. Need `jq` installed for interpreting JSON files.
+1. **Only for upload**: Need `rclone` installed and set up with a google drive.
