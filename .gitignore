@@ -1,7 +1,7 @@
-config.json
+BOT/config.json
 
 # logs
-thicc-log
+BOT/thicc-log
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
