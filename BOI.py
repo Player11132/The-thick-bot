@@ -36,10 +36,21 @@ players = {}
 async def on_ready():
     print("Bot online")
 
+# standardized error handling
 @bot.event
 async def on_command_error(ctx, err):
-    if isinstance(err, commands.CommandNotFound):
-        await ctx.send(f":x: Unknown command: `{ctx.invoked_with}`")
+    # format and send basic error message
+    e = lambda s, c='': ctx.send(":x: {0}{1}".format(s, f" `{c}`" if c else ''))
+    t = type(err)
+    if t == commands.CommandNotFound:
+        return await e("Unknown Command", ctx.invoked_with)
+    elif t == commands.BadArgument:
+        return await e("Invalid argument", err.param)
+    elif t == commands.TooManyArguments:
+        return await e("Too many arguments")
+    elif t == commands.MissingRequiredArgument:
+        return await e("Missing argument(s)", err.param)
+    else: raise err
 
 @bot.command(brief="Sends you info about the movie you searched")
 async def imdb(ctx : commands.Context, *, keyword : str):
