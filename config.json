@@ -1,8 +1,8 @@
 {
-    "ytapikey" : "AIzaSyDWiUq5Yf5Hx99XGmO5tS9CJvwa-BYW-Ps",
-    "imdbapikey" : "1658b05b",
-    "HostID" : 1234 ,
-    "BOT_TOKEN" : "Nzk2MDM1MzMwNjYyMjAzNDYy.X_SDrA.c1dGiGM7Fx2jfWZNrJk2qia4KHg"
+    "ytapikey" : "youtube api key",
+    "imdbapikey" : "imdb key ",
+    "HostID" : 12,
+    "BOT_TOKEN" : "Bot token I send you here"
 
 
 }

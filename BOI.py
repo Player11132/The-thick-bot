@@ -8,7 +8,7 @@ import youtube_dl
 
 import datetime
 import random
-from collections import OrderedDict
+
 
 f = open("config.json","r")#if the bot doesnt run be sure the config.json is in the same folder or that it hase the same name
 config = json.load(f)
@@ -32,9 +32,9 @@ players = {}
 async def on_active(ctx:bot.event):
     print("Bot online")
 
-@bot.command()
+@bot.command(brief="Sends you info about the movie you searched")
 async def imdb(ctx : commands.Context, *, keyword : str):
-    if keyword == None:
+    if keyword == None or keyword == "" or keyword == " ":
         await ctx.send("Please enter a keyword to search a movie")
         return
     r = requests.get(f"https://www.omdbapi.com/?t={keyword}&apikey={apikeyimdb}")
@@ -96,6 +96,39 @@ async def youtube_url(ctx : commands.Context, youtubeUrl : str):
     with youtube_dl.YoutubeDL({"quiet": True}) as ydl:
         audio_url = ydl.extract_info(youtubeUrl, download=False)['formats'][0]['url']
         ctx.voice_client.play(discord.FFmpegPCMAudio(audio_url))
+
+@bot.command(brief="Sends info of a steam game using its id (UNDER CONSTRUCTION)")
+async def steam_info_id(ctx : commands.Context, id : int):
+    r = requests.get(f"https://store.steampowered.com/api/appdetails?appids={id}")
+    game_data = r.json()[str(id)]
+    if not game_data['success']:
+        await ctx.send(f'Jocul cautat nu exista.')
+        return
+        
+    game_data = game_data["data"]
+
+    price = "Free"
+
+    if not game_data['is_free']:
+        price = game_data["price_overview"]["final_formatted"]
+        if game_data['price_overview']['initial_formatted'] != "":
+            price = f"~~{game_data['price_overview']['initial_formatted']}~~ {price}"
+
+    embed = discord.Embed(
+        title=game_data["name"], 
+        colour=discord.Colour(0x5176b), 
+        url=f"https://store.steampowered.com/app/{game_data['steam_appid']}/", 
+        description=game_data["short_description"], 
+        timestamp=datetime.datetime.utcnow()
+    )
+
+    embed.set_image(url=game_data["header_image"])
+    embed.set_footer(text="Steam API", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/200px-Steam_icon_logo.svg.png")
+
+    embed.add_field(name="Price", value=price, inline=True)
+    embed.add_field(name="Category", value=game_data["categories"][0]["description"], inline=True)
+
+    await ctx.send(embed=embed)
 
 @bot.command(brief="Plays the audio of the video you searched")
 async def youtubeaudio(ctx : commands.Context, *, keyword : str):
@@ -202,15 +235,18 @@ async def howareyou (ctx:commands.Context):
 
 creatorid = 569187596844924949
 @bot.command(brief="Makes bot ragequit")
-async def quit (ctx:commands.Context):
+async def close (ctx:commands.Context):
     if(ctx.author.id == creatorid or ctx.author.id ==hostid):
+        async def leave(ctx : commands.Context):
+        if ctx.voice_client and ctx.voice_client.is_connected():
+            await ctx.voice_client.disconnect()
         await ctx.send("Bye , you all not thick anymore :sob:")
-        await bot.quit()
+        await bot.logout()
     else:
        await ctx.send("YOU NOT MY DAD!,GET AWAY FROM ME!")
     
 
-@bot.command(brief="well , YOU WILL GET RICKROLLED BY A BOT NOOOB")
+@bot.command(brief="well , its in the name")
 async def rickrollthechannel(ctx:commands.Context):
     if not ctx.voice_client or not ctx.voice_client.is_connected():
         await ctx.send('Not connected to a voice channel')
@@ -221,14 +257,6 @@ async def rickrollthechannel(ctx:commands.Context):
         return
 
     ctx.voice_client.play(discord.FFmpegPCMAudio("rickroll.mp3"))
-
-@bot.command()
-async def youtubesong(ctx : commands.Context):
-    url = "https://youtu.be/DLzxrzFCyOs"
-    with youtube_dl.YoutubeDL() as ydl:
-        audio_url = ydl.extract_info(url, download=False)['formats'][0]['url']
-        ctx.voice_client.play(discord.FFmpegPCMAudio(audio_url))
-
 
 @bot.command(brief="it commits wikipedia")
 async def wiki(ctx:commands.Context,*,keyword:str):
