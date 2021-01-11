@@ -8,9 +8,7 @@ from discord.ext import commands
 import youtube_dl
 
 import time
-import datetime
 from datetime import datetime 
-from datetime import datetime
 import random
 
 # if the bot doesnt run be sure the config.json is in the same folder or that it hase the same name
@@ -51,6 +49,16 @@ async def on_command_error(ctx, err):
     elif t == commands.MissingRequiredArgument:
         return await e("Missing argument(s)", err.param)
     else: raise err
+
+# basic ping command mainly for testing purposes
+@bot.command(brief="Send response time in milliseconds, mainly for testing purposes")
+async def ping(ctx):
+    return await ctx.send(
+        str((
+            datetime.utcnow()
+            - ctx.message.created_at
+        ).total_seconds() * 1000) + "ms"
+    )
 
 @bot.command(brief="Sends you info about the movie you searched")
 async def imdb(ctx : commands.Context, *, keyword : str):
