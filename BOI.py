@@ -53,11 +53,11 @@ async def on_command_error(ctx, err):
 # basic ping command mainly for testing purposes
 @bot.command(brief="Send response time in milliseconds, mainly for testing purposes")
 async def ping(ctx):
-    return await ctx.send(
-        str((
+    return await ctx.send("{0}ms".format(
+        round((
             datetime.utcnow()
             - ctx.message.created_at
-        ).total_seconds() * 1000) + "ms"
+        ).total_seconds() * 1000))
     )
 
 @bot.command(brief="Sends you info about the movie you searched")
