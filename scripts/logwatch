@@ -5,14 +5,14 @@ if [ "$1" != "" ]; then cd "$1"; fi
 LOGDIR=`jq '.["LOG_CONFIG"]["LOGDIR"]' config.json -r`
 
 tmpfile="/tmp/skip"
-echo 0 > "$tmpfile"
+echo -n '' > "$tmpfile"
 function upload_it()
 {
 	file="$1"
 	# catch any soon-after modifications
 	sleep 5
-	# stop skipping files now
-	echo 0 > "$tmpfile"
+	# stop skipping this file now
+	sed -i "s:$file ::" "$tmpfile"
 	# upload
 	echo "Uploading $file"
 	rclone copy "$file" "gdrive:$LOGDIR"
@@ -20,9 +20,9 @@ function upload_it()
 
 inotifywait -rme modify "$LOGDIR" --format "%w%f" | while read file
 do
-	if (( ! `cat "$tmpfile"` ))
+	if [[ `cat "$tmpfile"` != *"$file"* ]]
 	then
 		upload_it "$file" &
-		echo 1 > "$tmpfile"
+		echo -n "$file " >> "$tmpfile"
 	fi
 done
