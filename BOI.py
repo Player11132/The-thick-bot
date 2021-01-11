@@ -28,7 +28,7 @@ hostid = config["HostID"]
 apikeyyoutube = config["ytapikey"]
 apikeyimdb = config["imdbapikey"]
 
-bot = commands.Bot(command_prefix='test ')
+bot = commands.Bot(command_prefix="BOI ")
 players = {}
 
 
