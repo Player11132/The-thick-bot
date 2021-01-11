@@ -2,15 +2,20 @@ import discord
 import requests
 import wikipedia
 import json
+import asyncio
 from discord.ext import commands
 
 import youtube_dl
 
+import time
 import datetime
+from datetime import datetime 
+from datetime import datetime
 import random
+import logwatch
 
 
-f = open("config.json","r")#if the bot doesnt run be sure the config.json is in the same folder or that it hase the same name
+f = open("BOT/config.json","r")#if the bot doesnt run be sure the config.json is in the same folder or that it hase the same name
 config = json.load(f)
 f.close()
 bot_token = config["BOT_TOKEN"] 
@@ -21,15 +26,16 @@ cats = ["Cat1.jpg","Cat2.jpg","Cat3.jpg","cat4.jpg"]
 
 hostid = config["HostID"]
 
+
 apikeyyoutube = config["ytapikey"]
 apikeyimdb = config["imdbapikey"]
 
-bot = commands.Bot(command_prefix='BOI ')
+bot = commands.Bot(command_prefix='test ')
 players = {}
 
 
 @bot.event
-async def on_active(ctx:bot.event):
+async def on_ready():
     print("Bot online")
 
 @bot.command(brief="Sends you info about the movie you searched")
@@ -98,29 +104,32 @@ async def youtube_url(ctx : commands.Context, youtubeUrl : str):
         ctx.voice_client.play(discord.FFmpegPCMAudio(audio_url))
 
 @bot.command(brief="Sends info of a steam game using its id (UNDER CONSTRUCTION)")
-async def steam_info_id(ctx : commands.Context, id : int):
-    r = requests.get(f"https://store.steampowered.com/api/appdetails?appids={id}")
-    game_data = r.json()[str(id)]
-    if not game_data['success']:
-        await ctx.send(f'Jocul cautat nu exista.')
-        return
+async def steam_info_id(ctx : commands.Context, id : str):
+    if(id.isdigit()):
+        id = int(id)
+        r = requests.get(f"https://store.steampowered.com/api/appdetails?appids={id}")
+        game_data = r.json()[str(id)]
+        if not game_data['success']:
+            await ctx.send(f'Searched game does not exist')
+            return
         
-    game_data = game_data["data"]
+        game_data = game_data["data"]
 
-    price = "Free"
+        price = "Free"
 
-    if not game_data['is_free']:
-        price = game_data["price_overview"]["final_formatted"]
-        if game_data['price_overview']['initial_formatted'] != "":
-            price = f"~~{game_data['price_overview']['initial_formatted']}~~ {price}"
+        if not game_data['is_free']:
+            price = game_data["price_overview"]["final_formatted"]
+            if game_data['price_overview']['initial_formatted'] != "":
+                price = f"~~{game_data['price_overview']['initial_formatted']}~~ {price}"
 
-    embed = discord.Embed(
-        title=game_data["name"], 
-        colour=discord.Colour(0x5176b), 
-        url=f"https://store.steampowered.com/app/{game_data['steam_appid']}/", 
-        description=game_data["short_description"], 
-        timestamp=datetime.datetime.utcnow()
-    )
+        embed = discord.Embed(
+            title=game_data["name"], 
+            colour=discord.Colour(0x5176b), 
+            url=f"https://store.steampowered.com/app/{game_data['steam_appid']}/", 
+            description=game_data["short_description"]
+        )
+    else:
+        await ctx.send("enter valid ID,make sure there are only numbers")
 
     embed.set_image(url=game_data["header_image"])
     embed.set_footer(text="Steam API", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/200px-Steam_icon_logo.svg.png")
@@ -237,7 +246,6 @@ creatorid = 569187596844924949
 @bot.command(brief="Makes bot ragequit")
 async def close (ctx:commands.Context):
     if(ctx.author.id == creatorid or ctx.author.id ==hostid):
-        async def leave(ctx : commands.Context):
         if ctx.voice_client and ctx.voice_client.is_connected():
             await ctx.voice_client.disconnect()
         await ctx.send("Bye , you all not thick anymore :sob:")
@@ -256,7 +264,7 @@ async def rickrollthechannel(ctx:commands.Context):
         await ctx.send('Audio already playing')
         return
 
-    ctx.voice_client.play(discord.FFmpegPCMAudio("rickroll.mp3"))
+    ctx.voice_client.play(discord.FFmpegPCMAudio("BOT_RESOURCES/rickroll.mp3"))
 
 @bot.command(brief="it commits wikipedia")
 async def wiki(ctx:commands.Context,*,keyword:str):

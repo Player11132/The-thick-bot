@@ -5,7 +5,8 @@
  FREE , wich ngl its A GREAT PRICE
  and made by Me aka Player11132
  Nice!
-# BEFORE YOU START SETTING UP
+
+# Setup Workspace
  be sure there is a config.json file in the SAME folder with the bot
  it should look like this before you fill everything up:
  https://screenrec.com/share/lphzsiBS5T
@@ -31,6 +32,7 @@
  pip install wikipedia
  ok with all the magic stuff installed
  we can get to Setting up the bot
+
 # Setting up the bot:
  1. HOST ID
  To get your id got to : User Settings>Apearance>Avanced>DeveloperMode = ON
@@ -70,6 +72,7 @@
  # Running the bot
  Well run the Bot , in visual studio
  there is a green arrow and click it
+ and now add it to a server and say BOI help
 
  # Help and support
  you can either DM me or
