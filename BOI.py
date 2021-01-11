@@ -36,6 +36,11 @@ players = {}
 async def on_ready():
     print("Bot online")
 
+@bot.event
+async def on_command_error(ctx, err):
+    if isinstance(err, commands.CommandNotFound):
+        await ctx.send(f":x: Unknown command: `{ctx.invoked_with}`")
+
 @bot.command(brief="Sends you info about the movie you searched")
 async def imdb(ctx : commands.Context, *, keyword : str):
     if keyword == None or keyword == "" or keyword == " ":
