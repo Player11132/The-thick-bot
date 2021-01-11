@@ -5,6 +5,12 @@
  FREE , wich ngl its A GREAT PRICE
  and made by Me aka Player11132
  Nice!
+ 
+## Bash script dependencies/notes
+1. It's likely that these will only work on Linux.
+1. Need `jq` installed for interpreting JSON files.
+1. **Only for upload and logwatch**: Need `rclone` installed and set up with a google drive.
+1. **Only for logwatch**: Need `inotify-tools` installed.
 
 # Setup Workspace
  be sure there is a config.json file in the SAME folder with the bot
@@ -80,5 +86,3 @@
  i will hopefully answer as soon as possible
  
  Thanks for using my bot
- 
-
