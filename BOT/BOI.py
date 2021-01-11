@@ -12,7 +12,6 @@ import datetime
 from datetime import datetime 
 from datetime import datetime
 import random
-import logwatch
 
 
 f = open("BOT/config.json","r")#if the bot doesnt run be sure the config.json is in the same folder or that it hase the same name

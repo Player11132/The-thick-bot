@@ -20,4 +20,4 @@ echo "
 " | tee -a "$LOG" "$ERR"
 
 # stdout appends to LOG, stderr appends to ERR
-python3 -u BOI1.py >> "$LOG" 2>> "$ERR" &
+python3 -u BOI.py >> "$LOG" 2>> "$ERR" &
