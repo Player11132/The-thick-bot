@@ -13,10 +13,9 @@ from datetime import datetime
 from datetime import datetime
 import random
 
-
-f = open("BOT/config.json","r")#if the bot doesnt run be sure the config.json is in the same folder or that it hase the same name
-config = json.load(f)
-f.close()
+# if the bot doesnt run be sure the config.json is in the same folder or that it hase the same name
+with open("config.json","r") as f:
+    config = json.load(f)
 bot_token = config["BOT_TOKEN"] 
 
 thickresponses = [" THICK , GG!" , " NOT THICK , thats sad." , " in between.." , " too skinny , not THICK..." , " DAMN BOIIIII HE THICK!!"]
