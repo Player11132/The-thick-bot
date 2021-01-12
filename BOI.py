@@ -262,7 +262,7 @@ async def rickrollthechannel(ctx:commands.Context):
         await ctx.send('Audio already playing')
         return
 
-    ctx.voice_client.play(discord.FFmpegPCMAudio("BOT_RESOURCES/rickroll.mp3"))
+    ctx.voice_client.play(discord.FFmpegPCMAudio("rickroll.mp3"))
 
 @bot.command(brief="it commits wikipedia")
 async def wiki(ctx:commands.Context,*,keyword:str):
