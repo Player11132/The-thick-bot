@@ -8,9 +8,7 @@ from discord.ext import commands
 import youtube_dl
 
 import time
-import datetime
 from datetime import datetime 
-from datetime import datetime
 import random
 
 # if the bot doesnt run be sure the config.json is in the same folder or that it hase the same name
@@ -28,13 +26,39 @@ hostid = config["HostID"]
 apikeyyoutube = config["ytapikey"]
 apikeyimdb = config["imdbapikey"]
 
-bot = commands.Bot(command_prefix='test ')
+bot = commands.Bot(command_prefix="BOI ")
 players = {}
 
 
 @bot.event
 async def on_ready():
     print("Bot online")
+
+# standardized error handling
+@bot.event
+async def on_command_error(ctx, err):
+    # format and send basic error message
+    e = lambda s, c='': ctx.send(":x: {0}{1}".format(s, f" `{c}`" if c else ''))
+    t = type(err)
+    if t == commands.CommandNotFound:
+        return await e("Unknown Command", ctx.invoked_with)
+    elif t == commands.BadArgument:
+        return await e("Invalid argument", err.param)
+    elif t == commands.TooManyArguments:
+        return await e("Too many arguments")
+    elif t == commands.MissingRequiredArgument:
+        return await e("Missing argument(s)", err.param)
+    else: raise err
+
+# basic ping command mainly for testing purposes
+@bot.command(brief="Send response time in milliseconds, mainly for testing purposes")
+async def ping(ctx):
+    return await ctx.send("{0}ms".format(
+        round((
+            datetime.utcnow()
+            - ctx.message.created_at
+        ).total_seconds() * 1000))
+    )
 
 @bot.command(brief="Sends you info about the movie you searched")
 async def imdb(ctx : commands.Context, *, keyword : str):
