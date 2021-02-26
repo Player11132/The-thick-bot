@@ -5,6 +5,8 @@
  FREE , wich ngl its A GREAT PRICE
  and made by Me aka Player11132
  Nice!
+ But it would never be done without the help
+ from dogerish, thank you!, dogerish.
  
 ## Bash script dependencies/notes
 1. It's likely that these will only work on Linux.
