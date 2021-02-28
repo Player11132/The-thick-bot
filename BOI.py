@@ -100,7 +100,7 @@ def generate_youtube_embed(video_data : dict):
         colour=discord.Colour(0xd0021b), 
         url=f'https://youtu.be/{video_data["id"]["videoId"]}', 
         description=video_data["snippet"]["description"], 
-        timestamp=datetime.datetime.fromisoformat(video_data["snippet"]["publishTime"].replace('Z', '+00:00'))
+        timestamp=datetime.fromisoformat(video_data["snippet"]["publishTime"].replace('Z', '+00:00'))
     )
 
     embed.set_image(url=video_data["snippet"]["thumbnails"]["high"]["url"])
