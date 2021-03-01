@@ -3,9 +3,12 @@ import requests
 import wikipedia
 import json
 import asyncio
+import os
 from discord.ext import commands
 
 import youtube_dl
+
+import Downloader
 
 import time
 from datetime import datetime 
@@ -22,6 +25,7 @@ cats = ["Cat1.jpg","Cat2.jpg","Cat3.jpg","cat4.jpg"]
 
 hostid = config["HostID"]
 
+url = ''
 
 apikeyyoutube = config["ytapikey"]
 apikeyimdb = config["imdbapikey"]
@@ -122,10 +126,10 @@ async def youtube_url(ctx : commands.Context, youtubeUrl : str):
         return
 
     with youtube_dl.YoutubeDL({"quiet": True}) as ydl:
-        audio_url = ydl.extract_info(youtubeUrl, download=False)['formats'][0]['url']
-        ctx.voice_client.play(discord.FFmpegPCMAudio(audio_url))
+        Downloader.urlassign(youtube_url)
+        ctx.voice_client.play(discord.FFmpegPCMAudio("Downloaded/Playnow.mp3"))
 
-@bot.command(brief="Sends info of a steam game using its id (UNDER CONSTRUCTION)")
+@bot.command(brief="Sends info of a steam game using its id")
 async def steam_info_id(ctx : commands.Context, id : str):
     if(id.isdigit()):
         id = int(id)
@@ -172,12 +176,10 @@ async def youtubeaudio(ctx : commands.Context, *, keyword : str):
         return
 
     with youtube_dl.YoutubeDL({"quiet": True}) as ydl:
-        video_info = ydl.extract_info(f"ytsearch:{keyword}", download=False)
-        if video_info["entries"]:
-            audio_url = video_info["entries"][0]['formats'][0]['url']
-            ctx.voice_client.play(discord.FFmpegPCMAudio(audio_url))
-        else:
-            await ctx.send('No results for the search')
+        youtubelinkgen(keyword)
+        Downloader.urlassign(url)
+        ctx.voice_client.play(discord.FFmpegPCMAudio("Downloaded/Playnow.mp3"))
+
 
 @bot.command(brief="Search youtube videos")
 async def youtube(ctx : commands.Context, *, keyword : str):
@@ -192,8 +194,19 @@ async def youtube(ctx : commands.Context, *, keyword : str):
         #await ctx.send(f'Top {len(data["items"])} results for your search:')
         for video_data in data["items"]:
             await ctx.send(embed = generate_youtube_embed(video_data))
-    else:
-        await ctx.send(f'I could not find any results for your search.')
+
+
+
+def youtubelinkgen(keyword):
+    r = requests.get(f"https://www.googleapis.com/youtube/v3/search?q={keyword}&part=snippet&maxResults=1&type=video&key={apikeyyoutube}")
+    data = r.json()
+    
+    if data["items"]:
+        for video_data in data["items"]:
+            global url
+            url=f'https://youtu.be/{video_data["id"]["videoId"]}'
+            print(url)
+
 
 @bot.command(brief="Sends random picture of a cat(NEW)")
 async def catplz(ctx:commands.Context):
@@ -233,6 +246,7 @@ async def stop(ctx : commands.Context):
         await ctx.send('Not in a voice channel')
         return
     ctx.voice_client.stop()
+    os.remove("Downloaded/Playnow.mp3")
 
 
 @bot.command()
@@ -253,6 +267,7 @@ async def resume(ctx : commands.Context):
 async def leave(ctx : commands.Context):
     if ctx.voice_client and ctx.voice_client.is_connected():
         await ctx.voice_client.disconnect()
+        os.remove("Downloaded/Playnow.mp3")
     else:
         await ctx.send('I am not connected to a voice channel')
 
