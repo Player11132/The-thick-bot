@@ -1,7 +1,8 @@
 {
     "ytapikey" : "Youtube api key",
     "imdbapikey" : "imdb api key",
-    "HostID" : 0,
+    "HostID": 0,
+    "BotPrefix":  "BOI ",
     "BOT_TOKEN" : "Bot token",
     "LOG_CONFIG": {
         "LOGDIR": "thicc-log",

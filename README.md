@@ -72,10 +72,15 @@
  after go in the config.json and paste the api key in the
  ytapikey field
  4. The bot token 
- Just dm me on discord for one
- my name is : Player11132#7328
- and i will give you a token
- thats it for setting it up
+ Go to:https://discord.com/developers/applications
+ Click on new application name it customize it
+ Then click on bot and add new bot and click on copy token
+ And paste it in the bot token slot
+ 5. Adding the bot to a server
+ On the same website(https://discord.com/developers/applications)
+ click on OAuth2 go to the table and select the bot role and then
+ click on copy under and paste it in the browser and thats is
+ select the server and youre done with setting the bot up
 
  # Running the bot
  Well run the Bot , in visual studio

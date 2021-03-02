@@ -30,7 +30,7 @@ url = ''
 apikeyyoutube = config["ytapikey"]
 apikeyimdb = config["imdbapikey"]
 
-bot = commands.Bot(command_prefix="BOI ")
+bot = commands.Bot(command_prefix=config["BotPrefix"])
 players = {}
 
 
@@ -124,10 +124,39 @@ async def youtube_url(ctx : commands.Context, youtubeUrl : str):
     if ctx.voice_client.is_playing():
         await ctx.send('Audio already running')
         return
+    print(is_supported(youtube_url))
+    if(is_supported(youtube_url)==True):
+        with youtube_dl.YoutubeDL({"quiet": True}) as ydl:
+            Downloader.urlassign(youtube_url)
+            ctx.voice_client.play(discord.FFmpegPCMAudio("Downloaded/Playnow.mp3"))
+    else: 
+        await ctx.send("Unvalid link!") 
+        return
 
-    with youtube_dl.YoutubeDL({"quiet": True}) as ydl:
-        Downloader.urlassign(youtube_url)
-        ctx.voice_client.play(discord.FFmpegPCMAudio("Downloaded/Playnow.mp3"))
+
+def is_supported(urls):
+    extractors = youtube_dl.extractor.gen_extractors()
+    for e in extractors:
+        if e.suitable(urls) and e.IE_NAME != 'generic':
+            return True
+    return False
+
+@bot.command(brief="Credits")
+async def Credits(ctx:commands.Context):
+    embed = discord.Embed(title="Credits:", colour=discord.Colour(0xc72f3), description="The Creators of BOI", timestamp=datetime.utcfromtimestamp(1614665256))
+
+    embed.set_image(url="https://media.discordapp.net/attachments/781470236548792330/786876795278196766/Thanks.gif?format=png&width=400&height=200")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/725050767102443632/d065f33326a70bdcc274c178228bb0ba.png?size=128")
+    embed.set_author(name="Player11132", icon_url="https://cdn.discordapp.com/avatars/569187596844924949/43f1d6dc57521dd71576bc445cd32b68.png?size=128")
+    embed.set_footer(text="Player11132 2021 all right reserved lol", icon_url="https://cdn.discordapp.com/avatars/796035330662203462/5f47b9fcaa61e5d16df6b4da7d1527c5.png?size=128")
+
+    embed.add_field(name="Player11132#7328", value="Programmer of the bot itself",inline=False)
+    embed.add_field(name="dogerish#1469", value="Absolute chad and host of the Bot and helper\n(couldnt do it without him)",inline=False)
+    embed.add_field(name="Hey,psst!Do you want Boi?", value="Go to: player11132.github.io",inline=False)
+    embed.add_field(name="Thank you", value="BOI", inline=True)
+    embed.add_field(name="For using:", value="the amazing discord bot", inline=True)
+    await ctx.send(embed=embed)
+
 
 @bot.command(brief="Sends info of a steam game using its id")
 async def steam_info_id(ctx : commands.Context, id : str):
@@ -176,9 +205,12 @@ async def youtubeaudio(ctx : commands.Context, *, keyword : str):
         return
 
     with youtube_dl.YoutubeDL({"quiet": True}) as ydl:
-        youtubelinkgen(keyword)
-        Downloader.urlassign(url)
-        ctx.voice_client.play(discord.FFmpegPCMAudio("Downloaded/Playnow.mp3"))
+        if(youtubelinkgen(keyword)!=False):
+            Downloader.urlassign(url)
+            ctx.voice_client.play(discord.FFmpegPCMAudio("Downloaded/Playnow.mp3"))
+        else:
+            await ctx.send("The search returned no results.")
+            return
 
 
 @bot.command(brief="Search youtube videos")
@@ -191,7 +223,6 @@ async def youtube(ctx : commands.Context, *, keyword : str):
         return
     
     if data["items"]:
-        #await ctx.send(f'Top {len(data["items"])} results for your search:')
         for video_data in data["items"]:
             await ctx.send(embed = generate_youtube_embed(video_data))
 
@@ -205,7 +236,9 @@ def youtubelinkgen(keyword):
         for video_data in data["items"]:
             global url
             url=f'https://youtu.be/{video_data["id"]["videoId"]}'
-            print(url)
+            return(True)
+    else:
+        return(False)
 
 
 @bot.command(brief="Sends random picture of a cat(NEW)")
@@ -246,7 +279,6 @@ async def stop(ctx : commands.Context):
         await ctx.send('Not in a voice channel')
         return
     ctx.voice_client.stop()
-    os.remove("Downloaded/Playnow.mp3")
 
 
 @bot.command()
@@ -256,7 +288,7 @@ async def pause(ctx : commands.Context):
         return
     ctx.voice_client.pause()
 
-@bot.command()
+@bot.command("resumes the last downloaded song")
 async def resume(ctx : commands.Context):
     if not ctx.voice_client or not ctx.voice_client.is_connected():
         await ctx.send('Not in a voice channel')
@@ -267,7 +299,6 @@ async def resume(ctx : commands.Context):
 async def leave(ctx : commands.Context):
     if ctx.voice_client and ctx.voice_client.is_connected():
         await ctx.voice_client.disconnect()
-        os.remove("Downloaded/Playnow.mp3")
     else:
         await ctx.send('I am not connected to a voice channel')
 
@@ -281,7 +312,7 @@ async def howareyou (ctx:commands.Context):
 
 creatorid = 569187596844924949
 @bot.command(brief="Makes bot ragequit")
-async def close (ctx:commands.Context):
+async def shutdown (ctx:commands.Context):
     if(ctx.author.id == creatorid or ctx.author.id ==hostid):
         if ctx.voice_client and ctx.voice_client.is_connected():
             await ctx.voice_client.disconnect()

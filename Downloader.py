@@ -40,6 +40,4 @@ ydl_opts = {
 }
 def download():
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        if os.path.exists("Downloaded/Playnow.mp3"):
-            os.remove("Downloaded/Playnow.mp3")
         ydl.download([url])
