@@ -1,3 +1,4 @@
+#Libraries
 import discord
 import requests
 import wikipedia
@@ -5,11 +6,8 @@ import json
 import asyncio
 import os
 from discord.ext import commands
-
 import youtube_dl
-
 import Downloader
-
 import time
 from datetime import datetime 
 import random
@@ -19,9 +17,9 @@ with open("config.json","r") as f:
     config = json.load(f)
 bot_token = config["BOT_TOKEN"] 
 
+#Variables
 thickresponses = [" THICK , GG!" , " NOT THICK , thats sad." , " in between.." , " too skinny , not THICK..." , " DAMN BOIIIII HE THICK!!"]
 responses = ["Good,you?", "I AM THICK BOIIIIIIIIIIIIIIIIIIIIIIIIII","I am bored","I am bad,you...?","I don't know what I am doing with my life anymore" , "UwU" , "OwO" , "¯\_(ツ)_/¯","༼ つ ◕_◕ ༽つ vibing..."]
-cats = ["Cat1.jpg","Cat2.jpg","Cat3.jpg","cat4.jpg"]
 
 hostid = config["HostID"]
 
@@ -33,7 +31,7 @@ apikeyimdb = config["imdbapikey"]
 bot = commands.Bot(command_prefix=config["BotPrefix"])
 players = {}
 
-
+#Says when the bot is online
 @bot.event
 async def on_ready():
     print("Bot online")
@@ -64,19 +62,24 @@ async def ping(ctx):
         ).total_seconds() * 1000))
     )
 
+#Simple Imdb movie search
 @bot.command(brief="Sends you info about the movie you searched")
 async def imdb(ctx : commands.Context, *, keyword : str):
+    #checks if you said a keyword
     if keyword == None or keyword == "" or keyword == " ":
         await ctx.send("Please enter a keyword to search a movie")
         return
+    #requests data from imdb
     r = requests.get(f"https://www.omdbapi.com/?t={keyword}&apikey={apikeyimdb}")
     data = r.json()
     data["Response"] = data["Response"] == "True"
 
+    #if it didn't get a response quit
     if not data["Response"]:        
         await ctx.send(f'There was a problem with your search. The error that occured has the following message `{data["Error"]}`.')
         return
 
+    #makes the embed
     embed = discord.Embed(
         title=data['Title'], 
         colour=discord.Colour(0x29b97f), 
@@ -84,6 +87,7 @@ async def imdb(ctx : commands.Context, *, keyword : str):
         description=data['Plot']
     )
 
+    #assigns values to embed
     if "Poster" in data:
         embed.set_image(url=data['Poster'])
     embed.set_footer(text="- Data from OMDBApi")
@@ -153,8 +157,7 @@ async def Credits(ctx:commands.Context):
     embed.add_field(name="Player11132#7328", value="Programmer of the bot itself",inline=False)
     embed.add_field(name="dogerish#1469", value="Absolute chad and host of the Bot and helper\n(couldnt do it without him)",inline=False)
     embed.add_field(name="Hey,psst!Do you want Boi?", value="Go to: player11132.github.io",inline=False)
-    embed.add_field(name="Thank you", value="BOI", inline=True)
-    embed.add_field(name="For using:", value="the amazing discord bot", inline=True)
+    embed.add_field(name="Thank you for using", value="BOI the amazing discord bot", inline=False)
     await ctx.send(embed=embed)
 
 
