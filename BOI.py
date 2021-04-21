@@ -340,9 +340,10 @@ async def rickrollthechannel(ctx:commands.Context):
 @bot.command(brief="it commits wikipedia")
 async def wiki(ctx:commands.Context,*,keyword:str):
     page = wikipedia.search(keyword,1)
-    if wikipedia.summary(page,5000)==None:
-        await ctx.send(page)
-        return
-    await ctx.send(wikipedia.summary(page,5000))
+    if not len(page): await ctx.send(f"No results for `{keyword}`")
+    else:
+        summary = wikipedia.summary(page,5000)
+        # send summary if it evaluates to true, otherwise default to page
+        await ctx.send(summary if summary else f"Failed to get summary for `{keyword}`")
     
 bot.run(bot_token)
