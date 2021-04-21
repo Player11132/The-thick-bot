@@ -7,12 +7,22 @@
  Nice!
  But it would never be done without the help
  from dogerish, thank you!, dogerish.
+
+## Python dependencies
+ dependencies should be correctly listed in
+ `require.txt` for easy installation with
+ `pip3 install -r require.txt`
+
+ In the case that this command finishes and
+ BOI.py still has missing modules, please add it
+ yourself and start a pull request or make an
+ issue for it so we can.
  
 ## Bash script dependencies/notes
 1. It's likely that these will only work on Linux.
-1. Need `jq` installed for interpreting JSON files.
-1. **Only for upload and logwatch**: Need `rclone` installed and set up with a google drive.
-1. **Only for logwatch**: Need `inotify-tools` installed.
+2. Need `jq` installed for interpreting JSON files.
+3. **Only for upload and logwatch**: Need `rclone` installed and set up with a google drive.
+4. **Only for logwatch**: Need `inotify-tools` installed.
 
 # Setup Workspace
  be sure there is a config.json file in the SAME folder with the bot
