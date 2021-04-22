@@ -1,7 +1,10 @@
 config.json
+ffmpeg.exe
 
 # logs
 thicc-log
+# download
+Downloaded/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
