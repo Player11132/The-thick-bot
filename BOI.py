@@ -342,8 +342,10 @@ async def wiki(ctx:commands.Context,*,keyword:str):
     page = wikipedia.search(keyword,1)
     if not len(page): await ctx.send(f"No results for `{keyword}`")
     else:
-        summary = wikipedia.summary(page,5000)
-        # send summary if it evaluates to true, otherwise default to page
-        await ctx.send(summary if summary else f"Failed to get summary for `{keyword}`")
-    
+        # try to send the summary, if there is an ambiguous case, pick the first page
+        try:
+            await ctx.send(wikipedia.summary(page))
+        except wikipedia.exceptions.DisambiguationError as e:
+            await ctx.send(wikipedia.page(e.options[0]).summary)
+
 bot.run(bot_token)
