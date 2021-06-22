@@ -2,3 +2,4 @@ discord
 wikipedia
 youtube_dl
 PyNaCl
+ffmpeg
