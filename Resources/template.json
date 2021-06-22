@@ -1,0 +1,14 @@
+{
+    "ytapikey" : "Youtube api key",
+    "imdbapikey" : "imdb api key",
+    "HostID": 0,
+    "BotPrefix":  "BOI ",
+    "BOT_TOKEN" : "Bot token",
+    "LOG_CONFIG": {
+        "LOGDIR": "thicc-log",
+        "LOG": "log.txt",
+        "ERR": "error.txt"
+    },
+    "thickresponses" : ["You looking pretty thick, good job!" , " Not thick, thats sad." , "Ehhh..." , " too skinny" , " DAMN BOI HE THICK!!"],
+    "responses" : ["Good,you?","I am bored","I am bad,you...?","I don't know what I am doing with my life anymore" , "UwU" , "OwO" , "I dunno","vibing..."]
+}
