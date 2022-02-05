@@ -1,9 +1,9 @@
 {
     "ytapikey" : "AIzaSyAQuHM7JPqI9Bn0BrUlujXfHviV37tFNmg",
     "imdbapikey" : "1658b05b",
-    "HostID" : 0,
+    "HostID" : 569187596844924949,
     "BotPrefix":"test ",
-    "BOT_TOKEN" : "Nzk4MTc2MjA1MDk0Mzg3NzMz.X_xNhA.YQTKLDjjXedN6EHqx43uj6wTzTk",
+    "BOT_TOKEN" : "Nzk4MTc2MjA1MDk0Mzg3NzMz.X_xNhA.vOY4-0yq-jyA7rfe_-HjbpCZL5A",
     "LOG_CONFIG": {
         "LOGDIR": "thicc-log",
         "LOG": "log.txt",
