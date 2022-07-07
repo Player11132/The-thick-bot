@@ -2,7 +2,7 @@
 # Clears the log files
 
 if [ "$1" != "" ]; then cd "$1"; fi
-LOGDIR=`jq '.["LOG_CONFIG"]["LOGDIR"]' config.json -r`
+LOGDIR=`jq '.["LOG_CONFIG"]["LOGDIR"]' Resources/config.json -r`
 
 # write date to all the files
 echo "

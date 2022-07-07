@@ -2,7 +2,7 @@
 # watches the log folder and uploads the file when it is modified
 
 if [ "$1" != "" ]; then cd "$1"; fi
-LOGDIR=`jq '.["LOG_CONFIG"]["LOGDIR"]' config.json -r`
+LOGDIR=`jq '.["LOG_CONFIG"]["LOGDIR"]' Resources/config.json -r`
 
 tmpfile="/tmp/skip"
 echo -n '' > "$tmpfile"
