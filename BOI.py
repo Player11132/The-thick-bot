@@ -27,7 +27,8 @@ hostid = config["HostID"]
 
 url = ''
 
-urls = []
+urls = {}
+
 
 index = 0
 name = ''
@@ -305,26 +306,29 @@ FFMPEG_OPTIONS = {
 #  --Audio commands and logic
 
 async def play_next(ctx):
-    print(len(urls))
+    vcid=ctx.message.author.voice.channel.id
+    #print(len(urls))
     voice = get(bot.voice_clients, guild=ctx.guild)
-    urls.pop(0)
-    print(len(urls))
-    if len(urls) > 0:
+    urls[vcid].pop(0)
+    #print(len(urls))
+    if len(urls[vcid]) > 0:
         await playsong(ctx)
     else:
         await ctx.send("Queue ended :x:")
         await voice.disconnect()
     
 async def playsong(ctx):
+    vcid=ctx.message.author.voice.channel.id
     voice = get(bot.voice_clients, guild=ctx.guild)
     embed = Embed(title="Now playing:")
-    embed.add_field(name=urls[0]['title'],value=f"Uploaded by: {urls[0]['uploader']} on {urls[0]['upload_date']}")
-    embed.set_footer(text=f"Duration: {urls[0]['duration']}")
+    embed.add_field(name=urls[vcid][0]['title'],value=f"Uploaded by: {urls[vcid][0]['uploader']} on {urls[vcid][0]['upload_date']}")
+    embed.set_footer(text=f"Duration: {urls[vcid][0]['duration']}")
     await ctx.send(embed=embed)
-    voice.play(FFmpegPCMAudio(urls[0]['url'], **FFMPEG_OPTIONS),after= lambda e:bot.loop.create_task(play_next(ctx)))
+    voice.play(FFmpegPCMAudio(urls[vcid][0]['url'], **FFMPEG_OPTIONS),after= lambda e:bot.loop.create_task(play_next(ctx)))
 
 @bot.command(brief="Plays requested song")
 async def play(ctx:commands.Context,*,keyword:str):
+    vcid=ctx.message.author.voice.channel.id
     if not ctx.voice_client or not ctx.voice_client.is_connected():
         await ctx.send("Connecting to voice channel...")
         if(ctx.message.author.voice is not None):
@@ -337,14 +341,15 @@ async def play(ctx:commands.Context,*,keyword:str):
         else:
             await ctx.send("You must be connected to a voice channel in order to use the play command")
             return
-
+    if vcid not in urls:
+        urls.update({vcid:[]})
     if ctx.voice_client.is_playing():
         await ctx.send("Already playing, adding song to the queue")
         with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
             if(youtubelinkgen(keyword)!=False):
                 info = ydl.extract_info(url, download=False)
                 if info not in urls:
-                    urls.append(info)
+                    urls[vcid].append(info)
                     await ctx.send(f"Song {info['title']} was succsessfully added to the queue \n {url}")
                 else:
                     await ctx.send(f"Song {info['title']} is already in the queue")
@@ -355,7 +360,7 @@ async def play(ctx:commands.Context,*,keyword:str):
         with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
             if(youtubelinkgen(keyword)!=False):
                 info = ydl.extract_info(url, download=False)
-                urls.append(info)
+                urls[vcid].append(info)
             else:
                 await ctx.send("Couldn't find song, try another keyword")
                 return
