@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from turtle import title
 from discord import Embed
 #Libraries
 from nextcord.ext.commands import Bot
@@ -8,14 +9,12 @@ import wikipedia
 import json
 from nextcord.ext import commands
 import youtube_dl
-import time
 from datetime import datetime 
 import random
 import os
 import ffmpeg
 from nextcord.utils import get 
 from nextcord import FFmpegPCMAudio
-import asyncio
 from difflib import SequenceMatcher
 
 # if the bot doesn't run be sure the config.json is in the resources folder named config and with the .json extension
@@ -38,7 +37,7 @@ apikeyimdb = config["imdbapikey"]
 
 prefix = config["BotPrefix"]
 
-#wierd nextcord stuff
+#weird nextcord stuff
 intents = nextcord.Intents.default()
 intents.message_content = True
 
@@ -48,7 +47,7 @@ class HelpCog(commands.HelpCommand):
         super().__init__()
     
     async def send_bot_help(self, mapping):
-        print("Help bot")
+        #builds help embed
         Helpembed = nextcord.Embed(
         title="Commands for BOI",
         description=f"Prefix is **{prefix}**"
@@ -74,7 +73,6 @@ class HelpCog(commands.HelpCommand):
         return await self.get_destination().send(embed=Helpembed)
     
     async def send_cog_help(self, cog):
-        print("help cog")
         return await super().send_cog_help(cog)
 
     async def send_command_help(self, command):
@@ -83,8 +81,7 @@ class HelpCog(commands.HelpCommand):
         return await self.get_destination().send(embed=embed)
 
     async def send_group_help(self, group):
-        print("Help group")
-        return await self.get_destination.send(Helpembed)
+        return await super().send_group_help(group)
 
 bot = commands.Bot(command_prefix=config["BotPrefix"], help_command=HelpCog(), intents=intents)
 #Debug stuff
@@ -312,17 +309,18 @@ async def play_next(ctx):
     voice = get(bot.voice_clients, guild=ctx.guild)
     urls.pop(0)
     print(len(urls))
-    if len(urls) > s0:
+    if len(urls) > 0:
         await playsong(ctx)
     else:
-        await ctx.send("Queue ended")
+        await ctx.send("Queue ended :x:")
         await voice.disconnect()
     
 async def playsong(ctx):
     voice = get(bot.voice_clients, guild=ctx.guild)
-    embed = Embed(title=urls[0]['title']
-    )
-    await ctx.send(f"Playing:{urls[0]['title']}")
+    embed = Embed(title="Now playing:")
+    embed.add_field(name=urls[0]['title'],value=f"Uploaded by: {urls[0]['uploader']} on {urls[0]['upload_date']}")
+    embed.set_footer(text=f"Duration: {urls[0]['duration']}")
+    await ctx.send(embed=embed)
     voice.play(FFmpegPCMAudio(urls[0]['url'], **FFMPEG_OPTIONS),after= lambda e:bot.loop.create_task(play_next(ctx)))
 
 @bot.command(brief="Plays requested song")
@@ -367,32 +365,25 @@ async def play(ctx:commands.Context,*,keyword:str):
 async def playnext(ctx:commands.Context):
     if ctx.voice_client.is_playing():
         ctx.voice_client.stop()
-    bot.loop.create_task(play_next(ctx))
+    #bot.loop.create_task(play_next(ctx))
 
-#@bot.command()
-#async def did_you_pay_your_taxes(ctx:commands.Context):
-#    await ctx.send("Taxes, what taxes?")
-
-
-
-#@bot.command()
-#async def you_are_commiting_taxfraud(ctx:commands.Context):
-#    await ctx.send("What is tax- \n THUMP THUMP THUMP \n Wtf? \n FBI OPEN UP \n AH FUCK THEY FOUND ME! \n PUT YO HAND IN THE AIR! \n NO FUCK YOU! \n YOU WILL NEVER TAKE ME ALIVE! \n *jumps from window and fucking dies*")
-
-@bot.command(brief="Shows queue",aliases=['Queue'])
+@bot.command(brief="Shows the queue",aliases=['Queue'])
 async def queue(ctx:commands.Context):
-    if len(urls)-1==0:
-        await ctx.send("Queue empty")
-        await ctx.voice_client.disconnect()
+    if len(urls)==0:
+        await ctx.send(":x: Queue empty")
         return
-
+    embed = Embed(title="Queue")
     for i in range(len(urls)):
         if i==0:
-            await ctx.send(f"Playing now: {urls[i]['title']} \n In queue: \n")
+            embed.add_field(name=f"Playing now: {urls[i]['title']}",value=f"Uploaded by:{urls[i]['uploader']} \n\n **In queue**")
         else:
-            await ctx.send(str(i) + f". {urls[i]['title']}")
+            text = str(i) + f". {urls[i]['title']}"
+            embed.add_field(name=text,value=f"Uploaded by:{urls[i]['uploader']}")
+    if len(urls)==1:
+        embed.add_field(name=":x: Queue empty!", value="Add songs by using the play command")
+    await ctx.send(embed=embed)
 
-@bot.command(brief="Leaves voice chat",aliases=['Leave','Stop'])
+@bot.command(brief="Leaves the voice chat",aliases=['Leave','Stop'])
 async def leave(ctx:commands.Context):
     if not ctx.voice_client or not ctx.voice_client.is_connected():
         await ctx.send("Not in any voice chat")
@@ -402,7 +393,7 @@ async def leave(ctx:commands.Context):
     await voice.disconnect()
     urls = []
 
-@bot.command(brief="Pauses music",aliases=['Pause'])
+@bot.command(brief="Pauses the music",aliases=['Pause'])
 async def pause(ctx:commands.Context):
     if not ctx.voice_client or not ctx.voice_client.is_connected():
         await ctx.send("Not in voice chat")
@@ -410,7 +401,7 @@ async def pause(ctx:commands.Context):
     voice = get(bot.voice_clients, guild=ctx.guild)
     if voice.is_playing():
         voice.pause()
-        await ctx.send("Music Paused")
+        await ctx.send("Music Paused :pause_button:")
     else:
         await ctx.send("Not playing any music")
 
@@ -421,12 +412,12 @@ async def resume(ctx:commands.Context):
         return
     voice = get(bot.voice_clients, guild=ctx.guild)
     if voice.is_playing():
-        await ctx.send("Alredy playing music")
+        await ctx.send("Already playing music")
     else:
         voice.resume()
-        await ctx.send("Music resumed")
+        await ctx.send("Music resumed :arrow_forward:")
 
-@bot.command(brief="well , its in the name",aliases=['Rickroll'])
+@bot.command(brief="Rickroll the vc you are in",aliases=['Rickroll'])
 async def rickroll(ctx:commands.Context):
     if not ctx.voice_client or not ctx.voice_client.is_connected():
         channel = ctx.author.voice.channel

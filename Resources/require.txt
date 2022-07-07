@@ -1,4 +1,5 @@
-discord
+nextcord
 wikipedia
 youtube_dl
 PyNaCl
+requests
