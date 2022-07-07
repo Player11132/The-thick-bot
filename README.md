@@ -59,15 +59,12 @@
  2. IMDB API KEY
  Go to :
  https://www.omdbapi.com/apikey.aspx
- then select the FREE option
- fill the requiements
+ then select the FREE option (should be enough)
  you will get an email with the API key 
- It will look like this:
- https://screenrec.com/share/EnvuXowJke
  but first you must click on the Activate api key link
- After that just copy the api key from the Mail and paste it in
- the IMDB api key field in the config file
- Step 2 , done !
+ After that just copy the api key from the mail and paste it in
+ the `IMDB api key` field in the config file
+ Step 2, done!
  3. Youtube API key
  Go to:
  https://console.developers.google.com/
@@ -86,16 +83,18 @@
  https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.7z
  extract and in the bin folder should be FFMPEG.exe,
  copy that in the same folder as BOI
+ `do this if ffmpeg isn't already in the github project`
  5. The bot token 
- Go to:https://discord.com/developers/applications
+ Go to: https://discord.com/developers/applications
  Click on new application name it customize it
  Then click on bot and add new bot and click on copy token
- And paste it in the bot token slot
+ And paste it in the `bot token slot`
  6. Adding the bot to a server
  On the same website(https://discord.com/developers/applications)
  click on OAuth2 go to the table and select the bot role and then
- click on copy under and paste it in the browser and thats is
+ click on copy under and paste it in the browser and thats it
  select the server and youre done with setting the bot up
+ !Important! Because of the update to nextcord, enable all the intents in the OAuth2 tab!
 
  # Running the bot
  Well run the Bot , in visual studio
