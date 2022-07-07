@@ -348,7 +348,7 @@ async def play(ctx:commands.Context,*,keyword:str):
         with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
             if(youtubelinkgen(keyword)!=False):
                 info = ydl.extract_info(url, download=False)
-                if info not in urls:
+                if info not in urls[vcid]:
                     urls[vcid].append(info)
                     await ctx.send(f"Song {info['title']} was succsessfully added to the queue \n {url}")
                 else:
@@ -374,16 +374,17 @@ async def playnext(ctx:commands.Context):
 
 @bot.command(brief="Shows the queue",aliases=['Queue'])
 async def queue(ctx:commands.Context):
+    vcid=ctx.message.author.voice.channel.id
     if len(urls)==0:
         await ctx.send(":x: Queue empty")
         return
     embed = Embed(title="Queue")
-    for i in range(len(urls)):
+    for i in range(len(urls[vcid])):
         if i==0:
-            embed.add_field(name=f"Playing now: {urls[i]['title']}",value=f"Uploaded by:{urls[i]['uploader']} \n\n **In queue**")
+            embed.add_field(name=f"Playing now: {urls[vcid][i]['title']}",value=f"Uploaded by:{urls[vcid][i]['uploader']} \n\n **In queue**")
         else:
-            text = str(i) + f". {urls[i]['title']}"
-            embed.add_field(name=text,value=f"Uploaded by:{urls[i]['uploader']}")
+            text = str(i) + f". {urls[vcid][i]['title']}"
+            embed.add_field(name=text,value=f"Uploaded by:{urls[vcid][i]['uploader']}")
     if len(urls)==1:
         embed.add_field(name=":x: Queue empty!", value="Add songs by using the play command")
     await ctx.send(embed=embed)
